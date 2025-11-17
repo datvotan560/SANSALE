@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sàn Giao Dịch & Voucher Ưu Đãi - Lấy Cảm Hứng từ Longhousee & Shopee Voucher</title>
+    <!-- Tải Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#f43f5e', // Màu hồng/đỏ nổi bật cho các deal hot
+                        'secondary': '#1d4ed8', // Màu xanh cho nút
+                        'card-bg': '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Đảm bảo font Inter được sử dụng */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Thanh Header Nổi Bật (Sticky) -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="text-2xl font-bold text-primary tracking-tight">
+                <a href="#">DEAL <span class="text-gray-800">HUB</span></a>
+            </div>
+
+            <!-- Thanh tìm kiếm (Ẩn trên mobile, hiện trên desktop/tablet) -->
+            <div class="hidden md:flex flex-grow max-w-xl mx-8">
+                <input id="search-input" type="text" placeholder="Tìm kiếm sản phẩm, voucher, mã giảm giá..."
+                       class="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <button onclick="handleSearch()"
+                        class="bg-primary text-white px-5 py-2 rounded-r-lg font-semibold hover:bg-red-600 transition duration-300">
+                    Tìm
+                </button>
+            </div>
+
+            <!-- Icons (Cart & User) -->
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative p-1 rounded-full bg-gray-100 transition duration-300">
+                    <!-- Icon Giỏ hàng (Lucide Cart) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 12.08a2 2 0 0 0 1.95 1.62h10.74a2 2 0 0 0 1.95-1.62L23 6H6"/></svg>
+                    <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-secondary rounded-full">3</span>
+                </button>
+                <button class="text-gray-600 hover:text-primary p-1 rounded-full bg-gray-100 transition duration-300">
+                    <!-- Icon Tài khoản (Lucide User) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Thanh Tìm kiếm trên Mobile (Hiển thị khi cần) -->
+        <div class="md:hidden px-4 pb-3">
+             <div class="flex">
+                <input id="search-input-mobile" type="text" placeholder="Tìm kiếm voucher..."
+                       class="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <button onclick="handleSearch('mobile')"
+                        class="bg-primary text-white px-5 py-2 rounded-r-lg font-semibold hover:bg-red-600 transition duration-300 text-sm">
+                    Tìm
+                </button>
+            </div>
+        </div>
+
+        <!-- Thanh Menu Danh Mục -->
+        <nav class="bg-primary/95 shadow-inner">
+            <div class="container mx-auto px-4">
+                <ul class="flex justify-between md:justify-start overflow-x-auto whitespace-nowrap space-x-6 py-2 text-sm md:text-base">
+                    <li><a href="#" class="text-white font-medium hover:text-yellow-300 transition duration-150">Trang Chủ</a></li>
+                    <li><a href="#" class="text-white/80 hover:text-yellow-300 transition duration-150">Mã Shopee HOT</a></li>
+                    <li><a href="#" class="text-white/80 hover:text-yellow-300 transition duration-150">Đồng Hồ & Phụ Kiện</a></li>
+                    <li><a href="#" class="text-white/80 hover:text-yellow-300 transition duration-150">Thời Trang Nữ</a></li>
+                    <li><a href="#" class="text-white/80 hover:text-yellow-300 transition duration-150">Sức Khỏe & Làm Đẹp</a></li>
+                    <li><a href="#" class="text-white/80 hover:text-yellow-300 transition duration-150">Đồ Gia Dụng</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Nội dung chính -->
+    <main class="container mx-auto px-4 py-8">
+
+        <!-- Banner Quảng Cáo (Inspired by Longhousee's main banner) -->
+        <div class="bg-secondary/10 p-6 rounded-xl mb-10 shadow-lg border border-secondary/20">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-4 md:mb-0">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-secondary mb-2">SIÊU SALE CUỐI NĂM!</h1>
+                    <p class="text-gray-700 text-lg mb-4">Giảm tới 70% các mặt hàng và voucher độc quyền chỉ có tại DEAL HUB.</p>
+                    <button class="bg-primary text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300">
+                        Xem Tất Cả Ưu Đãi
+                    </button>
+                </div>
+                <!-- Placeholder Image (replace with actual banner image/carousel later) -->
+                <div class="md:w-1/3 w-full h-32 md:h-40 bg-secondary/20 rounded-lg flex items-center justify-center text-secondary/70 font-semibold italic">
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Tiêu đề và Bộ lọc -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 border-l-4 border-primary pl-3">DEAL & VOUCHER MỚI NHẤT</h2>
+            <select class="p-2 border border-gray-300 rounded-lg bg-white text-sm">
+                <option>Phổ biến nhất</option>
+                <option>Mới nhất</option>
+                <option>Giá thấp nhất</option>
+            </select>
+        </div>
+
+        <!-- Lưới Hiển Thị Sản Phẩm/Voucher (4 cột trên desktop, 2 cột trên mobile) -->
+        <div id="deal-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+
+            <!-- Card Mẫu 1: Voucher/Mã Giảm Giá (Giống vouchershopee.vn) -->
+            <div class="deal-card bg-card-bg rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100" data-code="SHP20KFREESHIP">
+                <img src="https://placehold.co/600x400/f43f5e/ffffff?text=Voucher+Shopee" alt="Mã giảm giá Shopee" class="w-full h-32 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">Mã FreeShip 0Đ cho đơn hàng trên 20K</h3>
+                    <p class="text-sm text-gray-500 mb-3">Hạn dùng: 30/11/2025</p>
+                    <div class="flex items-center justify-between bg-yellow-100 border border-yellow-300 p-2 rounded-lg">
+                        <span class="text-primary font-bold text-lg">20K OFF</span>
+                        <button onclick="copyCode(this)"
+                                class="bg-secondary text-white text-sm font-medium py-1 px-3 rounded-md hover:bg-blue-700 transition duration-300 active:scale-95">
+                            Sao Chép
+                        </button>
+                    </div>
+                    <span class="mt-2 block text-xs text-green-600 font-medium opacity-0 transition duration-300">Đã sao chép!</span>
+                </div>
+            </div>
+
+            <!-- Card Mẫu 2: Sản Phẩm (Giống longhousee.com) -->
+            <div class="deal-card bg-card-bg rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100">
+                <img src="https://placehold.co/600x400/1d4ed8/ffffff?text=Đồng+Hồ+Cơ" alt="Đồng hồ đeo tay cao cấp" class="w-full h-32 object-cover">
+                <div class="p-4">
+                    <span class="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded absolute top-2 right-2">NEW</span>
+                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">Đồng Hồ Cơ Automatic Sang Trọng</h3>
+                    <p class="text-sm text-gray-500 mb-3">Thời trang nam/nữ</p>
+                    <div class="flex items-end justify-between">
+                        <div class="flex flex-col">
+                             <span class="text-xl font-bold text-primary">2.990.000đ</span>
+                             <span class="text-xs line-through text-gray-400">4.500.000đ</span>
+                        </div>
+                        <button class="bg-primary text-white text-sm font-medium py-1.5 px-3 rounded-md hover:bg-red-600 transition duration-300 active:scale-95 flex items-center space-x-1">
+                            <!-- Icon Mua hàng (Lucide Cart) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                            <span>Mua Ngay</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Mẫu 3: Voucher Giảm giá 50% -->
+            <div class="deal-card bg-card-bg rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100" data-code="TIKIMAY50">
+                <img src="https://placehold.co/600x400/10b981/ffffff?text=Voucher+Tiki" alt="Mã giảm giá Tiki" class="w-full h-32 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">Voucher 50% cho ngành hàng Điện Tử</h3>
+                    <p class="text-sm text-gray-500 mb-3">Tiki, áp dụng mọi đơn hàng</p>
+                    <div class="flex items-center justify-between bg-red-100 border border-red-300 p-2 rounded-lg">
+                        <span class="text-primary font-bold text-lg">50% OFF</span>
+                        <button onclick="copyCode(this)"
+                                class="bg-secondary text-white text-sm font-medium py-1 px-3 rounded-md hover:bg-blue-700 transition duration-300 active:scale-95">
+                            Sao Chép
+                        </button>
+                    </div>
+                    <span class="mt-2 block text-xs text-green-600 font-medium opacity-0 transition duration-300">Đã sao chép!</span>
+                </div>
+            </div>
+            
+            <!-- Card Mẫu 4: Sản phẩm Sale -->
+            <div class="deal-card bg-card-bg rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100">
+                <img src="https://placehold.co/600x400/ef4444/ffffff?text=Tai+Nghe+Bluetooth" alt="Tai nghe Bluetooth" class="w-full h-32 object-cover">
+                <div class="p-4">
+                    <span class="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded absolute top-2 right-2">SALE 40%</span>
+                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">Tai Nghe Bluetooth Chống Ồn Thế Hệ Mới</h3>
+                    <p class="text-sm text-gray-500 mb-3">Âm thanh sống động, pin 24h</p>
+                    <div class="flex items-end justify-between">
+                        <div class="flex flex-col">
+                             <span class="text-xl font-bold text-primary">790.000đ</span>
+                             <span class="text-xs line-through text-gray-400">1.390.000đ</span>
+                        </div>
+                        <button class="bg-primary text-white text-sm font-medium py-1.5 px-3 rounded-md hover:bg-red-600 transition duration-300 active:scale-95 flex items-center space-x-1">
+                            <!-- Icon Mua hàng (Lucide Cart) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                            <span>Mua Ngay</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thêm các card mẫu khác để lấp đầy grid -->
+            <div class="deal-card bg-card-bg rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100" data-code="GRABSALE20">
+                <img src="https://placehold.co/600x400/94a3b8/ffffff?text=Voucher+Grab" alt="Mã giảm giá GrabFood" class="w-full h-32 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">Mã giảm 20K cho GrabFood/GrabBike</h3>
+                    <p class="text-sm text-gray-500 mb-3">Áp dụng mọi khu vực</p>
+                    <div class="flex items-center justify-between bg-yellow-100 border border-yellow-300 p-2 rounded-lg">
+                        <span class="text-primary font-bold text-lg">20K OFF</span>
+                        <button onclick="copyCode(this)"
+                                class="bg-secondary text-white text-sm font-medium py-1 px-3 rounded-md hover:bg-blue-700 transition duration-300 active:scale-95">
+                            Sao Chép
+                        </button>
+                    </div>
+                    <span class="mt-2 block text-xs text-green-600 font-medium opacity-0 transition duration-300">Đã sao chép!</span>
+                </div>
+            </div>
+            
+            <div class="deal-card bg-card-bg rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100">
+                <img src="https://placehold.co/600x400/fb923c/ffffff?text=Áo+Khoác" alt="Áo khoác dù" class="w-full h-32 object-cover">
+                <div class="p-4">
+                    <span class="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded absolute top-2 right-2">-35%</span>
+                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">Áo Khoác Dù Basic Dáng Rộng Unisex</h3>
+                    <p class="text-sm text-gray-500 mb-3">Chất liệu cao cấp</p>
+                    <div class="flex items-end justify-between">
+                        <div class="flex flex-col">
+                             <span class="text-xl font-bold text-primary">399.000đ</span>
+                             <span class="text-xs line-through text-gray-400">600.000đ</span>
+                        </div>
+                        <button class="bg-primary text-white text-sm font-medium py-1.5 px-3 rounded-md hover:bg-red-600 transition duration-300 active:scale-95 flex items-center space-x-1">
+                            <!-- Icon Mua hàng (Lucide Cart) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                            <span>Mua Ngay</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Nút Xem thêm (Load More) -->
+        <div class="text-center mt-10">
+            <button class="bg-secondary text-white font-semibold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg">
+                Xem Thêm Deal & Voucher
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Cột 1: Giới thiệu -->
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-primary">DEAL HUB</h4>
+                    <p class="text-sm text-gray-400">Nền tảng tổng hợp mã giảm giá và sản phẩm ưu đãi hàng đầu Việt Nam.</p>
+                </div>
+
+                <!-- Cột 2: Danh mục -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Danh Mục</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition">Voucher Điện Tử</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Thời Trang Hot</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Đồ Gia Dụng</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Mã FreeShip</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Hỗ trợ -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Hỗ Trợ Khách Hàng</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition">Liên Hệ</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Chính Sách Bảo Mật</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Điều Khoản Sử Dụng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Liên hệ -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Thông Tin Liên Hệ</h4>
+                    <p class="text-sm text-gray-400">Email: support@dealhub.vn</p>
+                    <p class="text-sm text-gray-400">Địa chỉ: 123 Đường Deal, Quận 1, TP.HCM</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-4 border-t border-gray-700 text-center text-sm text-gray-500">
+                &copy; 2025 DEAL HUB. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Hàm xử lý sao chép mã voucher
+        function copyCode(buttonElement) {
+            // Lấy phần tử cha (deal-card)
+            const card = buttonElement.closest('.deal-card');
+            // Lấy mã từ thuộc tính data-code
+            const code = card.getAttribute('data-code');
+            // Lấy phần tử thông báo (span)
+            const notificationSpan = card.querySelector('span.text-xs');
+
+            // 1. Sao chép mã vào clipboard (Dùng document.execCommand cho tính tương thích trong sandbox)
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // 2. Hiển thị thông báo
+            notificationSpan.textContent = `Đã sao chép: ${code}`;
+            notificationSpan.classList.remove('opacity-0');
+            notificationSpan.classList.add('opacity-100');
+            
+            // 3. Ẩn thông báo sau 2 giây
+            setTimeout(() => {
+                notificationSpan.classList.remove('opacity-100');
+                notificationSpan.classList.add('opacity-0');
+            }, 2000);
+        }
+
+        // Hàm xử lý tìm kiếm
+        function handleSearch(type = 'desktop') {
+            const inputElement = type === 'mobile' 
+                                 ? document.getElementById('search-input-mobile') 
+                                 : document.getElementById('search-input');
+            const query = inputElement.value.trim();
+            
+            if (query) {
+                // Thay vì chuyển hướng, chỉ in ra console để demo chức năng
+                console.log(`Đang tìm kiếm: ${query}`);
+                
+                // Hiển thị thông báo tìm kiếm (có thể dùng modalbox thay vì alert)
+                const searchBox = document.createElement('div');
+                searchBox.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-2xl z-[100] border-t-4 border-primary";
+                searchBox.innerHTML = `
+                    <h3 class="text-xl font-bold mb-3">Kết Quả Tìm Kiếm (Demo)</h3>
+                    <p class="text-gray-700">Đã mô phỏng tìm kiếm với từ khóa: "<span class="font-semibold text-primary">${query}</span>".</p>
+                    <p class="text-sm text-gray-500 mt-2">Trong ứng dụng thực tế, kết quả sẽ được lọc hoặc tải lại trang.</p>
+                    <button onclick="this.closest('div').remove()" class="mt-4 bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">Đóng</button>
+                `;
+                document.body.appendChild(searchBox);
+            }
+        }
+    </script>
+</body>
+</html>
